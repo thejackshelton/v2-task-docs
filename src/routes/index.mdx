@@ -1,21 +1,32 @@
 ---
-
 ---
 
 import TaskCounter from '~/components/examples/task-counter'
 
 # Tasks
 
-Tasks automatically manage updates and interactions in your application by:
+Tasks are how your application responds to change.
 
-1. **Reacting to changes** - Respond to data updates like user input or API responses
-2. **Coordinating external systems** - Work with browser APIs, servers, and device features
-3. **Maintaining consistency** - Keep UI, state, and external systems aligned
+When you're building an application, things change constantly. Users type in inputs, data arrives from servers, timers fire, or components get updated. Tasks help you manage all of these changes by:
+
+1. **Watching for changes** - Tasks track the state you care about
+2. **Running your code** - When tracked state changes, your task runs again
+3. **Managing side effects** - Tasks handle API calls, timers, and subscriptions
+4. **Cleaning up** - Tasks clean up previous effects before running again
+
+## The "Hello World" of Tasks
+
+Let's start with a simple Task that runs when your component first loads:
+
+
+
+
 
 ## The Multi-Source Counter
 
-Consider a character counter that needs to stay updated when text changes from **any source**:
-
-> This will show an example 
+Consider a character counter that needs to stay updated when text changes from **any source**. This example shows how Tasks help manage:
+- Input validation
+- API calls
+- Cleanup operations
 
 <TaskCounter />

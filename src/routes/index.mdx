@@ -1,11 +1,11 @@
 ---
 ---
 
-import TaskCounter from '~/components/examples/task-counter'
-import TaskServer from '~/components/examples/task-server'
+import TaskCounter from '~/routes/examples/task-counter'
+import TaskServer from '~/routes/examples/task-server'
 import serverRack from '~/assets/server-rack.webp'
 import theClient from '~/assets/the-client.webp'
-import TaskConditional from '~/components/examples/task-conditional'
+import TaskConditional from '~/routes/examples/task-conditional'
 
 # Tasks
 
@@ -19,13 +19,39 @@ When you're building an application, things change constantly. Users type in inp
 
 ## Tasks Run Based on Environment
 
-Tasks run in the same place where your component is created:
+Tasks *initially* run in the same place where your component is created. 
+
+<div class="relative overflow-hidden">
+```tsx
+  export default component$(() => {
+    console.log("I run once when rendered!")
+
+    useTask$(() => {
+      console.log("I run once based on the environment!")
+    })
+
+    useComputed$(() => {
+      console.log("I also run initially!")
+    })
+
+    useResource$(() => {
+      console.log("me too!")
+    })
+
+    return (
+      <div>
+        <h1>Tasks</h1>
+      </div>
+    )
+  })
+```
+</div>
 
 ### Created in the Browser
 
 When a component is created from user interaction (like clicking a button), it runs in the browser:
 
-<TaskConditional />
+<Showcase name="task-conditional" />
 
 #### Client side rendering
 

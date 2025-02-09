@@ -78,13 +78,13 @@
 	pre > code {
 		font-family: "Monaspace", monospace;
 		font-palette: --kung-fury;
-		line-height: 1.6;
 	}
 
 	pre {
 		min-width: 0;
 		overflow-x: auto;
 		padding: 2ch;
+		line-height: 1.6;
 	}
 
 	img {

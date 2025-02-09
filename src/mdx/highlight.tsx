@@ -46,7 +46,7 @@ export const Highlight = component$(
 			<div
 				{...props}
 				class={cn(
-					"max-h-[31.25rem] max-w-full overflow-auto bg-[#181e20]",
+					"max-h-[31.25rem] max-w-full overflow-auto bg-neutral-900",
 					props.class,
 				)}
 				data-pagefind-ignore

@@ -1,11 +1,9 @@
 ---
+title: Tasks
 ---
 
-import TaskCounter from '~/routes/examples/task-counter'
-import TaskServer from '~/routes/examples/task-server'
 import serverRack from '~/assets/server-rack.webp'
 import theClient from '~/assets/the-client.webp'
-import TaskConditional from '~/routes/examples/task-conditional'
 
 # Tasks
 
@@ -55,15 +53,19 @@ When a component is created from user interaction (like clicking a button), it r
 
 #### Client side rendering
 
-When a visitor of your site first reaches a page, and that page uses [CSR]() for rendering, the task code will initially run in the browser.
+When a visitor of your site first reaches a page, and that page uses [CSR](https://prismic.io/blog/client-side-rendering) for rendering, the task code will initially run in the browser.
 
 ```tsx
 useTask$(() => {
-  console.log('hey')
+  // browser only code when client side rendered
 })
 ```
 
-<img src={theClient} alt="The Client" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
+  <img 
+    src={theClient} 
+    alt="The Client" 
+    class="max-w-50 mix-blend-luminosity rounded-full border-2 border-white mx-auto" 
+  />
 
 
 
@@ -77,7 +79,7 @@ useTask$(() => {
 
 When a component is part of your initial page load, it runs on the server:
 
-<TaskServer />
+<Showcase name="task-server" />
 
   <img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
@@ -90,4 +92,4 @@ Consider a character counter that needs to stay updated when text changes from *
 - API calls
 - Cleanup operations
 
-<TaskCounter />
+<Showcase name="task-counter" />

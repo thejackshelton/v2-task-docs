@@ -156,7 +156,7 @@ export const components: Record<string, Component> = {
 			<pre
 				{...props}
 				class={cn(
-					"mb-4 mt-6 overflow-x-auto rounded-lg bg-kunai-blue-50 py-4 text-cool-700",
+					"mb-4 mt-6 overflow-x-auto rounded-lg bg-kunai-blue-50 py-4 text-cool-700 bg-neutral-900",
 					props.class,
 				)}
 			>
@@ -169,7 +169,7 @@ export const components: Record<string, Component> = {
 			<code
 				{...props}
 				class={cn(
-					"py-[0.2rem]font-mono relative rounded border border-cool-400 bg-cool-200 box-decoration-clone px-[0.3rem] py-1 text-sm text-cool-700",
+					"py-[0.2rem]font-mono relative rounded box-decoration-clone px-[0.3rem] py-1 text-sm text-cool-700",
 					props.class,
 				)}
 			>

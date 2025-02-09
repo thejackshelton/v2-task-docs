@@ -3,22 +3,44 @@
 
 import TaskCounter from '~/components/examples/task-counter'
 import TaskServer from '~/components/examples/task-server'
+import serverRack from '~/assets/server-rack.webp'
+import theClient from '~/assets/the-client.webp'
+import TaskConditional from '~/components/examples/task-conditional'
 
 # Tasks
 
 Tasks are how your application responds to change.
 
-When you're building an application, things change constantly. Users type in inputs, data arrives from servers, timers fire, or components get updated. Tasks help you manage all of these changes by:
+When you're building an application, things change constantly. Users type in inputs, data arrives from servers, timers fire, and state needs to be updated. Tasks help you manage all of these changes by:
 
 1. **Watching for changes** - Tasks track the state you care about
 2. **Running your code** - When tracked state changes, your task runs again
 3. **Cleaning up** - Tasks clean up previous code before running again
 
-## Your First Task
+## Tasks Run Based on Environment
 
-Below is an example of a simple Task that runs when your component starts up (like when you first open an app):
+Your task code *initially* executes in the environment where your component is created - either server or browser.
+
+### Created by user interaction.
+
+Components created by user interaction are **always** rendered in the browser.
+
+To demonstrate this, here's a component with a task that gets rendered in response to a button click:
+
+<TaskConditional />
+
+Notice that the task executes in the browser environment. This is because the component was created in response to user interaction on the client side.
+
+### Created by the server.
+
+
 
 <TaskServer />
+
+<div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '16px' }}>
+  <img src={serverRack} alt="Server Rack" style={{ maxWidth: '250px', borderRadius: '9999px', border: '2px solid #e3e2e9', objectFit: 'cover', objectPosition: 'right' }} />
+  <img src={theClient} alt="The Client" style={{ maxWidth: '250px', borderRadius: '9999px', border: '2px solid #e3e2e9' }} />
+</div>
 
 
 

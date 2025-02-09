@@ -44,11 +44,11 @@ When a component is created from user interaction (like clicking a button), it r
 
 ## Environment rendering strategies
 
-
+Your app can run entirely in the browser (CSR) or start on a server (SSR/SSG) - this choice affects where your code runs.
 
 ### Client Side Rendering (CSR)
 
-When a visitor of your site first reaches a page, and that page uses [Client side rendering (CSR)](https://prismic.io/blog/client-side-rendering), the task and application code will **always** run in the browser.
+When a visitor of your site first reaches a page, and that page uses [Client side rendering (CSR)](https://www.youtube.com/watch?v=4-Lel1oaV7M), the task and application code will **always** run in the browser.
 
 <img 
   src={theClient} 
@@ -66,11 +66,25 @@ useTask$(() => {
 
 > CSR can be enabled by setting `csr: true` in the `qwikVite` plugin options.
 
-### Server side rendering (SSR) and Static Site Generation (SSG)
+### Server Side Rendering (SSR) and Static Site Generation (SSG)
 
 <img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
-Most Qwik applications are rendered on the server. When a component is part of your initial page load, it runs on the server:
+When a user visits a page that uses [SSR/SSG](https://www.youtube.com/watch?v=0bvo6UKkNDA), the server prepares everything - including running your tasks - before sending the HTML to the browser:
+
+```tsx
+export default component$(() => {
+  useTask$(() => {
+    // On first page load:
+    //   ✅ Runs on the server
+    //   ❌ Doesn't run on browser
+  });
+  
+  {...}
+});
+```
+
+This is different from traditional client-side frameworks where all code runs in the browser. With Qwik's SSR, your tasks run on the server first, making your site faster to load and more SEO-friendly.
 
 <Showcase name="task-server" />
 
@@ -132,6 +146,22 @@ useTask$(() => {
   // browser only code can go here
 })
 ```
+
+## When tasks run
+
+Now that you know how to check *where* your code is running, it's important to know *when* your code runs.
+
+Tasks run before the JSX has been rendered. Taking a look at our earlier example, we can see that the task changed the signal value before the page was server rendered:
+
+<Showcase name="task-server" />
+
+> An exception to this rule is `useVisibleTask$` - the callback function passed to the hook runs after the JSX has been rendered.
+
+### Tasks run in order
+
+Tasks run sequentially in the order they are defined - like following steps in a recipe. Just as you can't frost a cake before baking it, tasks will execute one after another in the order you write them.
+
+<Showcase name="task-order" />
 
 ## The Multi-Source Counter
 

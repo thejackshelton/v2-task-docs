@@ -1,5 +1,6 @@
 ---
 title: Tasks
+description: This is a learn section. It is not specific to specific hooks. We will have a reference section for each hook later.
 ---
 
 import serverRack from '~/assets/server-rack.webp'
@@ -15,29 +16,23 @@ When you're building an application, things change constantly. Users type in inp
 2. **Running your code** - When tracked state changes, your task runs again
 3. **Cleaning up** - Tasks clean up previous code before running again
 
-> What makes Qwik's task system unique is its fine-grained control over execution environments. Qwik allows you to precisely specify whether code runs on the server, in the browser, or both, while efficiently managing the transfer of state between environments.
+> What makes Qwik's task system special is that you can choose where each function runs - on the server, in the browser, or both - while Qwik handles all the efficient state management between environments.
 
 ## Tasks Run Based on Environment
 
 Tasks *initially* run in the same place where your component is created. 
 
-<div class="relative overflow-hidden">
 ```tsx
   export default component$(() => {
-    console.log("I'm inside the render function. I run once when rendered!")
+    console.log("I'm inside the component boundary. I run once when rendered!")
 
     useTask$(() => {
-      console.log("I run once based on the environment!")
+      console.log("Nothing special here, so I run once based on the environment!")
     })
 
-    return (
-      <div>
-        <h1>Tasks</h1>
-      </div>
-    )
+    {...}
   })
 ```
-</div>
 
 > The following examples cover `useTask$`, but the same principles apply to `useComputed$`, `useResource$` and other functions called within a component, with the exception of `useVisibleTask$`.
 
@@ -47,39 +42,96 @@ When a component is created from user interaction (like clicking a button), it r
 
 <Showcase name="task-conditional" />
 
-#### Client side rendering
+## Environment rendering strategies
 
-When a visitor of your site first reaches a page, and that page uses [CSR](https://prismic.io/blog/client-side-rendering) for rendering, the task code will initially run in the browser.
 
-  <img 
-    src={theClient} 
-    alt="The Client" 
-    class="max-w-50 mix-blend-luminosity rounded-full border-2 border-white mx-auto" 
-  />
+
+### Client Side Rendering (CSR)
+
+When a visitor of your site first reaches a page, and that page uses [Client side rendering (CSR)](https://prismic.io/blog/client-side-rendering), the task and application code will **always** run in the browser.
+
+<img 
+  src={theClient} 
+  alt="The Client" 
+  class="max-w-50 mix-blend-luminosity rounded-full border-2 border-white mx-auto" 
+/>
+
+Even if this task function runs again, it will **always** run in the browser.
 
 ```tsx
 useTask$(() => {
-  // browser only code when client side rendered
+  // Always browser code
 })
 ```
 
+> CSR can be enabled by setting `csr: true` in the `qwikVite` plugin options.
 
+### Server side rendering (SSR) and Static Site Generation (SSG)
 
+<img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
-
-
-
-
-
-### Created on the Server
-
-When a component is part of your initial page load, it runs on the server:
+Most Qwik applications are rendered on the server. When a component is part of your initial page load, it runs on the server:
 
 <Showcase name="task-server" />
 
-  <img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
+#### Navigating with `<Link />` (Hybrid Rendering)
 
+Using Qwik Router's `<Link />` component lets you switch between pages without a full page reload. When you click the Link component, any new tasks will run in the browser:
 
+```tsx
+export default component$(() => {
+  return (
+    <>
+      <a href="/blog">
+        Blog (Static Site Generated) after click
+      </a>
+
+      <Link href="/dashboard">
+        Dashboard (Client-Side Rendered) after click
+      </Link>
+    </>
+  );
+});
+```
+
+However, in the context of a server rendered application, refreshing the dashboard page will run the task code on the server. The next section covers how to ensure your code only runs in the intended environment.
+
+## Check where your code is running
+
+Qwik provides two ways to check where your code is running:
+
+1. `isServer` - Check if the code is running on the **server**
+2. `isBrowser` - Check if the code is running on the **browser**
+
+```tsx
+import { isBrowser, isServer } from '@qwik.dev/core';
+
+export default component$(() => {
+  useTask$(() => {
+    if (isServer) {
+      // code here will ONLY run on the server
+    }
+
+    if (isBrowser) {
+      // code here will ONLY run on the browser
+    }
+  })
+
+  {...}
+})
+```
+
+Alternatively, you could early return based on the environment:
+
+```tsx
+useTask$(() => {
+  // server and browser code can go here
+
+  if (isServer) return;
+
+  // browser only code can go here
+})
+```
 
 ## The Multi-Source Counter
 

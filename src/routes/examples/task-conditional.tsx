@@ -6,7 +6,7 @@ export default component$(() => {
 	return (
 		<>
 			<button onClick$={() => (isComponentRendered.value = true)}>
-				Render component with task
+				Render component in browser
 			</button>
 			{isComponentRendered.value && <TaskComponent />}
 		</>
@@ -18,5 +18,5 @@ const TaskComponent = component$(() => {
 		console.log("TaskComponent task running");
 	});
 
-	return <div>Component with task rendered!</div>;
+	return <div>Component rendered!</div>;
 });

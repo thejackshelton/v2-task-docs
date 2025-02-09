@@ -1,9 +1,11 @@
-import { component$, useTask$ } from "@qwik.dev/core";
+import { component$, useSignal, useTask$ } from "@qwik.dev/core";
 
 export default component$(() => {
+	const signal = useSignal("");
+
 	useTask$(() => {
-		console.log("I run when the component is first created!");
+		signal.value = "Hello World";
 	});
 
-	return <div>Hello World</div>;
+	return <div>{signal.value}</div>;
 });

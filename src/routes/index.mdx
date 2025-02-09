@@ -19,28 +19,41 @@ When you're building an application, things change constantly. Users type in inp
 
 ## Tasks Run Based on Environment
 
-Your task code *initially* executes in the environment where your component is created - either server or browser.
+Tasks run in the same place where your component is created:
 
-### Created by user interaction.
+### Created in the Browser
 
-Components created by user interaction are **always** rendered in the browser.
-
-To demonstrate this, here's a component with a task that gets rendered in response to a button click:
+When a component is created from user interaction (like clicking a button), it runs in the browser:
 
 <TaskConditional />
 
-Notice that the task executes in the browser environment. This is because the component was created in response to user interaction on the client side.
+#### Client side rendering
 
-### Created by the server.
+When a visitor of your site first reaches a page, and that page uses [CSR]() for rendering, the task code will initially run in the browser.
+
+```tsx
+useTask$(() => {
+  console.log('hey')
+})
+```
+
+<img src={theClient} alt="The Client" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
 
+
+
+
+
+
+
+
+### Created on the Server
+
+When a component is part of your initial page load, it runs on the server:
 
 <TaskServer />
 
-<div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '16px' }}>
-  <img src={serverRack} alt="Server Rack" style={{ maxWidth: '250px', borderRadius: '9999px', border: '2px solid #e3e2e9', objectFit: 'cover', objectPosition: 'right' }} />
-  <img src={theClient} alt="The Client" style={{ maxWidth: '250px', borderRadius: '9999px', border: '2px solid #e3e2e9' }} />
-</div>
+  <img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
 
 

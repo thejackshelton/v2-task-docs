@@ -8,6 +8,7 @@ import { qwikRouter } from "@qwik.dev/router/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 import pkg from "./package.json";
+import { recmaProvideComponents } from "./src/mdx/recma-provide-comp";
 
 type PkgDep = Record<string, string>;
 const { dependencies = {}, devDependencies = {} } = pkg as any as {
@@ -22,7 +23,17 @@ errorOnDuplicatesPkgDeps(devDependencies, dependencies);
  */
 export default defineConfig(({ command, mode }): UserConfig => {
 	return {
-		plugins: [tailwindcss(), qwikRouter(), qwikVite(), tsconfigPaths()],
+		plugins: [
+			tailwindcss(),
+			qwikRouter({
+				mdx: {
+					providerImportSource: "~/mdx/provider",
+					recmaPlugins: [recmaProvideComponents],
+				},
+			}),
+			qwikVite(),
+			tsconfigPaths(),
+		],
 		// This tells Vite which dependencies to pre-build in dev mode.
 		optimizeDeps: {
 			// Put problematic deps that break bundling here, mostly those with binaries.

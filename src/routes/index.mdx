@@ -46,6 +46,29 @@ When a component is created from user interaction (like clicking a button), it r
 
 Your app can run entirely in the browser (CSR) or start on a server (SSR/SSG) - this choice affects where your code runs.
 
+### How can I know where my code is running?
+
+Without having to be an expert in rendering strategies, you can inspect the Qwik container element to understand where your code is running.
+
+Every Qwik application is wrapped in a container element (usually the `<html>` element) that provides information about how and where the code is running. You can inspect this container in your browser's DevTools to understand the execution environment.
+
+### Finding the Container
+
+Look for an element with a `q:container` attribute - this is your Qwik container. It will typically look something like this:
+
+```html
+<html q:container="paused" 
+      q:version="2.0.0" 
+      q:render="ssr" 
+      q:base="/build/">
+```
+
+- `dom` - This part of the page was client side rendered
+- `ssr` - This part of the page was server side rendered
+- `static-ssr` - This part of the page was statically generated
+
+> In dev mode, the value of the `q:render` attribute will have an appended `-dev` suffix.
+
 ### Client Side Rendering (CSR)
 
 When a visitor of your site first reaches a page, and that page uses [Client side rendering (CSR)](https://www.youtube.com/watch?v=4-Lel1oaV7M), the task and application code will **always** run in the browser.
@@ -70,21 +93,39 @@ useTask$(() => {
 
 <img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
 
-When a user visits a page that uses [SSR/SSG](https://www.youtube.com/watch?v=0bvo6UKkNDA), the server prepares everything - including running your tasks - before sending the HTML to the browser:
+When a user visits a page that uses [SSR](https://www.youtube.com/watch?v=0bvo6UKkNDA) or [SSG](https://www.youtube.com/watch?v=1zhT23VDVDc), the server prepares everything - including running your tasks - before sending the HTML to the browser. This is a key feature of Qwik's resumability - code that runs on the server doesn't need to run again in the browser.
 
 ```tsx
 export default component$(() => {
   useTask$(() => {
-    // On first page load:
+    // During initial page load:
     //   ✅ Runs on the server
-    //   ❌ Doesn't run on browser
+    //   ❌ Doesn't run in browser
+    //   ✅ Runs before rendering
+    //   ✅ Can be async
+    //   ✅ Blocks rendering until complete
   });
   
-  {...}
+  return <div>Hello</div>;
 });
 ```
 
-This is different from traditional client-side frameworks where all code runs in the browser. With Qwik's SSR, your tasks run on the server first, making your site faster to load and more SEO-friendly.
+#### Benefits of Server Execution
+
+Running code on the server when possible (like data fetching or heavy computations) gives you several key benefits:
+
+1. **Better Performance** - Servers are typically more powerful than user devices
+2. **Smaller Bundle Size** - Users don't need to download code that already ran on the server
+3. **Improved SEO** - Search engines see the fully rendered content
+4. **Faster Initial Page Load** - Content is ready when HTML arrives
+
+<Showcase name="task-server" />
+
+#### Execute code when users care
+
+Running code on the server when possible (like data fetching or heavy computations) gives you two key benefits:
+1. Better performance - servers are typically more powerful than user devices
+2. Smaller bundle size - users don't need to download code that already ran on the server
 
 <Showcase name="task-server" />
 
@@ -110,9 +151,9 @@ export default component$(() => {
 
 However, in the context of a server rendered application, refreshing the dashboard page will run the task code on the server. The next section covers how to ensure your code only runs in the intended environment.
 
-## Check where your code is running
+## Ensure your code *only* runs in the intended environment
 
-Qwik provides two ways to check where your code is running:
+Qwik provides two ways to ensure your code only runs in the intended environment:
 
 1. `isServer` - Check if the code is running on the **server**
 2. `isBrowser` - Check if the code is running on the **browser**

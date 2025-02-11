@@ -10,7 +10,7 @@ import theClient from '~/assets/the-client.webp'
 
 Tasks are how your application responds to change.
 
-When you're building an application, things change constantly. Users type in inputs, data is fetched from different sources, timers fire, and state needs to be updated. Tasks help you manage all of these changes by:
+Users type in inputs, data is fetched from different sources, timers fire, and state needs to be updated. Tasks help you manage all of these changes by:
 
 1. **Watching for changes** - Tasks track the state you care about
 2. **Running your code** - When tracked state changes, your task runs again
@@ -48,9 +48,9 @@ Your app can run entirely in the browser (CSR) or start on a server (SSR/SSG) - 
 
 ### How can I know where my code is running?
 
-Without having to be an expert in rendering strategies, you can inspect the Qwik container element to understand where your code is running.
+Without having to be an expert in rendering strategies, you can find the `q:render` attribute on the Qwik container element to understand where your code is running.
 
-Every Qwik application is wrapped in a container element (usually the `<html>` element) that provides information about how and where the code is running. You can inspect this container in your browser's DevTools to understand the execution environment.
+Every Qwik application is wrapped in a [Qwik container](https://qwik.dev/docs/advanced/containers/#containers) (usually the `<html>` element) that provides information about how and where the code is running. You can inspect this container in your browser's DevTools to understand the execution environment.
 
 ### Finding the Container
 
@@ -69,7 +69,7 @@ Look for an element with a `q:container` attribute - this is your Qwik container
 
 > In dev mode, the value of the `q:render` attribute will have an appended `-dev` suffix.
 
-### Client Side Rendering (CSR)
+### When the browser manages the page (CSR)
 
 When a visitor of your site first reaches a page, and that page uses [Client side rendering (CSR)](https://www.youtube.com/watch?v=4-Lel1oaV7M), the task and application code will **always** run in the browser.
 
@@ -89,45 +89,52 @@ useTask$(() => {
 
 > CSR can be enabled by setting `csr: true` in the `qwikVite` plugin options.
 
-### Server Side Rendering (SSR) and Static Site Generation (SSG)
+### When a server delivers the page (SSR and SSG)
 
-<img src={serverRack} alt="Server Rack" class="border-2 border-gray-50 max-w-50 object-cover rounded-full mx-auto" />
+Applications using [SSR](https://www.youtube.com/watch?v=0bvo6UKkNDA) and [SSG](https://www.youtube.com/watch?v=1zhT23VDVDc) will *initially* run your tasks on the server.
 
-When a user visits a page that uses [SSR](https://www.youtube.com/watch?v=0bvo6UKkNDA) or [SSG](https://www.youtube.com/watch?v=1zhT23VDVDc), the server prepares everything - including running your tasks - before sending the HTML to the browser. This is a key feature of Qwik's resumability - code that runs on the server doesn't need to run again in the browser.
+<Showcase name="task-server" />
+
+This grants access to powerful operations like data fetching and complex calculations before the page reaches the browser.
+
+Think of your UI as a function of data. Servers are powerful because they:
+1. Already have all your data
+2. Know exactly what UI to send (no loading spinners)
+3. Only ship the code your user needs right now
 
 ```tsx
 export default component$(() => {
-  useTask$(() => {
-    // During initial page load:
-    //   ✅ Runs on the server
-    //   ❌ Doesn't run in browser
-    //   ✅ Runs before rendering
-    //   ✅ Can be async
-    //   ✅ Blocks rendering until complete
-  });
+  const userExperience = useSignal();
   
-  return <div>Hello</div>;
+  useTask$(async () => {
+    // Get initial data
+    const user = await getCurrentUser();
+    
+    // Process and transform
+    const updatedUser = {
+      ...user,
+      preferences: optimizePreferences(user.preferences),
+      segments: await calculateUserSegments(user)
+    };
+    
+    // Grab data in advance
+    userExperience.value = {
+      user: updatedUser,
+      features: await getEnabledFeatures(updatedUser),
+      experiments: await getActiveExperiments(updatedUser.segments)
+    };
+    // All done before the page reaches the browser!
+  });
+
+  useTask$(() => {
+    signal.value = "My signal assignment is synchronous!"
+  })
+  
+  return <YourPersonalizedExperience data={userExperience.value} />;
 });
 ```
 
-#### Benefits of Server Execution
-
-Running code on the server when possible (like data fetching or heavy computations) gives you several key benefits:
-
-1. **Better Performance** - Servers are typically more powerful than user devices
-2. **Smaller Bundle Size** - Users don't need to download code that already ran on the server
-3. **Improved SEO** - Search engines see the fully rendered content
-4. **Faster Initial Page Load** - Content is ready when HTML arrives
-
-<Showcase name="task-server" />
-
-#### Execute code when users care
-
-Running code on the server when possible (like data fetching or heavy computations) gives you two key benefits:
-1. Better performance - servers are typically more powerful than user devices
-2. Smaller bundle size - users don't need to download code that already ran on the server
-
-<Showcase name="task-server" />
+> Tasks naturally handle both immediate operations and [promises](https://www.joshwcomeau.com/javascript/promises/).
 
 #### Navigating with `<Link />` (Hybrid Rendering)
 
@@ -192,7 +199,7 @@ useTask$(() => {
 
 Now that you know how to check *where* your code is running, it's important to know *when* your code runs.
 
-Tasks run before the JSX has been rendered. Taking a look at our earlier example, we can see that the task changed the signal value before the page was server rendered:
+Tasks run before the JSX has been rendered, meaning they **block rendering** until they complete. Taking a look at our earlier example, we can see that the task changed the signal value before the page was server rendered:
 
 <Showcase name="task-server" />
 
@@ -204,11 +211,16 @@ Tasks run sequentially in the order they are defined - like following steps in a
 
 <Showcase name="task-order" />
 
-## The Multi-Source Counter
+## Tracking and watching for changes 
 
-Consider a character counter that needs to stay updated when text changes from **any source**. This example shows how Tasks help manage:
-- Input validation
-- API calls
-- Cleanup operations
+Tasks are reactive and will re-run **only** the task function when the tracked state changes. Every task has a function called `track` as its first argument.
 
-<Showcase name="task-counter" />
+> The exception here being `useComputed$`, which will automatically track any reactive values (signals and stores), including even props that are passed to it.
+
+```tsx
+useTask$(({ track }) => {
+  track(() => signal.value);
+
+  // code here will run initially, then re-run when the signal value changes
+});
+```

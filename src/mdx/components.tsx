@@ -61,7 +61,7 @@ export const components: Record<string, Component> = {
 			<h4
 				{...props}
 				class={cn(
-					"mt-8 scroll-m-20 text-xl font-semibold tracking-tight text-cool-700",
+					"mt-8 scroll-m-20 text-lg font-semibold tracking-tight text-cool-700",
 					props.class,
 				)}
 			>

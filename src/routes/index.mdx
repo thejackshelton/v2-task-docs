@@ -44,9 +44,19 @@ When a component is created from user interaction (like clicking a button), it r
 
 ## Environment rendering strategies
 
-Your app can run entirely in the browser (CSR) or start on a server (SSR/SSG) - this choice affects where your code runs.
+Your app can run entirely in the browser (CSR) or start on a server (SSR/SSG) - this choice affects where your code runs at page load.
 
 ### How can I know where my code is running?
+
+#### Checking where code runs
+
+- Browser: Look in your browser's DevTools console
+- Server: Look in your terminal where you ran `npm run dev` or `npm run preview`
+
+> Tip: Try adding `console.log("Hello!")` to your task - where you see the message tells you where it ran.
+
+
+#### Inspecting the DOM
 
 Without having to be an expert in rendering strategies, you can find the `q:render` attribute on the Qwik container element to understand where your code is running.
 
@@ -215,12 +225,24 @@ Tasks run sequentially in the order they are defined - like following steps in a
 
 Tasks are reactive and will re-run **only** the task function when the tracked state changes. Every task has a function called `track` as its first argument.
 
-> The exception here being `useComputed$`, which will automatically track any reactive values (signals and stores), including even props that are passed to it.
+> The exception being `useComputed$`, which will automatically track any reactive values (including props) that are passed to it.
+
+The track function is able to watch the changes of:
+- Reactive values (signals, stores, etc.)
+- Properties on the props object
 
 ```tsx
 useTask$(({ track }) => {
   track(() => signal.value);
 
   // code here will run initially, then re-run when the signal value changes
+  // Code runs in that new environment
 });
 ```
+
+### Transitioning between environments
+
+When the signal value changes, the task will re-run. 
+
+<Showcase name="task-test" />
+

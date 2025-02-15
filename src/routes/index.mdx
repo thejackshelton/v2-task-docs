@@ -14,9 +14,20 @@ Users type in inputs, data is fetched from different sources, timers fire, and s
 
 1. **Watching for changes** - Tasks track the state you care about
 2. **Running your code** - When tracked state changes, your task runs again
-3. **Cleaning up** - Tasks clean up previous code before running again
+3. **Cleaning up** - Tasks clean up previous code before executing new code.
 
-> What makes Qwik's task system special is that you can choose where each function runs - on the server, in the browser, or both - while Qwik handles all the efficient state management between environments.
+Tasks also come with a superpower: they can **efficiently move data between server and browser**. You tell them where to run.
+
+<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
+  <summary>How is this different from effects in my previous framework?</summary>
+  
+  Key differences:
+  * Tasks can run on both server and browser
+  * Tasks run before rendering (unlike effects which run after)
+  * Tasks can execute both async and sync code
+
+  Think of Tasks like a smart mailman - they efficiently deliver your code and data between server (sender) and browser (recipient).
+</details>
 
 ## Tasks Run Based on Environment
 

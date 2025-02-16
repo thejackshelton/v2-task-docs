@@ -232,30 +232,54 @@ Tasks run before the JSX has been rendered, meaning they **block rendering** unt
 
 > An exception to this rule is `useVisibleTask$` - the callback function passed to the hook runs after the JSX has been rendered.
 
-### Tasks run in order
+### Tasks Run in Order
 
 Tasks run sequentially in the order they are defined - like following steps in a recipe. Just as you can't frost a cake before baking it, tasks will execute one after another in the order you write them.
 
-<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
-  <summary>Why don't tasks run in parallel by default?</summary>
+It's best practice to `await` promises in your tasks. This ensures each task completes before the next one starts:
 
-  The framework does the hard work of running tasks in sequence. This makes your code predictable and easier to debug.
-
-  If you need parallel execution, you can handle it by not returning the promise. 
-
-  ```tsx
-// Sequential (default)
+```tsx
 useTask$(async () => {
-   // This blocks the next task, where await implicitly returns a promise
-  await someAsyncWork();
+   // Good: Wait for the async work to complete
+   await someAsyncWork();
 });
 
-// Parallel (opt-in)
-useTask$(() => {
-   // This doesn't block - runs in parallel
-  someAsyncWork();
+useTask$(async () => {
+   // Next task won't start until someAsyncWork is done
+   await someOtherWork();
 });
-  ```
+```
+
+> The framework does the hard work of running tasks in order. This makes your code predictable and easier to debug.
+
+### Running Tasks in Parallel
+
+Sometimes you might want tasks to run at the same time. You can do this by not awaiting the promise:
+
+```tsx
+useTask$(() => {
+   // This runs in parallel - doesn't block other tasks
+   someAsyncWork();
+});
+
+useTask$(() => {
+   // This starts immediately, doesn't wait for someAsyncWork
+   someOtherWork();
+});
+```
+
+<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
+  <summary>How does Qwik schedule and manage tasks internally?</summary>
+
+  Qwik has a scheduler that identifies pieces of work that need to run, these are called **chores**. 
+
+  `useTask$`, `useComputed$`, and `useResource$`, are types of chores that the scheduler will run.
+
+  Some other types of chores include rendering a component, doing a node diff, or flushing the journal.
+
+  The journal tracks what needs to change, while the scheduler manages when and in what order those changes (and other work) should happen. 
+
+  The scheduler uses a [priority queue](https://encore.dev/blog/queueing) to determines when this work should happen. 
 </details>
 
 <Showcase name="task-order" />

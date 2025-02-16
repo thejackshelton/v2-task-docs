@@ -156,7 +156,7 @@ export const components: Record<string, Component> = {
 			<pre
 				{...props}
 				class={cn(
-					"mb-4 mt-6 overflow-x-auto rounded-lg bg-kunai-blue-50 py-4 text-cool-700 bg-neutral-900",
+					"mb-4 mt-6 overflow-x-auto rounded-lg py-4 text-cool-700 bg-neutral-900 whitespace-pre-wrap",
 					props.class,
 				)}
 			>
@@ -175,56 +175,6 @@ export const components: Record<string, Component> = {
 			>
 				<Slot />
 			</code>
-		);
-	}),
-	table: component$<PropsOf<"table">>(({ ...props }) => {
-		return (
-			<table
-				{...props}
-				class={cn(
-					"mt-6 w-full border-collapse border border-cool-200",
-					props.class,
-				)}
-			>
-				<Slot />
-			</table>
-		);
-	}),
-	th: component$<PropsOf<"th">>(({ ...props }) => {
-		return (
-			<th
-				{...props}
-				class={cn(
-					"border border-cool-200 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
-					props.class,
-				)}
-			>
-				<Slot />
-			</th>
-		);
-	}),
-	td: component$<PropsOf<"td">>(({ ...props }) => {
-		return (
-			<td
-				{...props}
-				class={cn(
-					"border border-cool-200 px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
-					props.class,
-				)}
-			>
-				<Slot />
-			</td>
-		);
-	}),
-	tr: component$<PropsOf<"tr">>(({ ...props }) => {
-		return (
-			<tr
-				{...props}
-				class={cn(
-					"m-0 border-t border-cool-300 p-0 even:bg-cool-100",
-					props.class,
-				)}
-			/>
 		);
 	}),
 	Showcase,

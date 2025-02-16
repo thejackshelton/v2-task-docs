@@ -1,4 +1,4 @@
-import { staticAdapter } from "@qwik.dev/router/adapters/static/vite";
+import { cloudflarePagesAdapter } from "@qwik.dev/router/adapters/cloudflare-pages/vite";
 import { extendConfig } from "@qwik.dev/router/vite";
 import baseConfig from "../../vite.config.ts";
 
@@ -7,13 +7,9 @@ export default extendConfig(baseConfig, () => {
 		build: {
 			ssr: true,
 			rollupOptions: {
-				input: ["@qwik-router-config"],
+				input: ["src/entry.cloudflare-pages.tsx", "@qwik-router-config"],
 			},
 		},
-		plugins: [
-			staticAdapter({
-				origin: "https://yoursite.qwik.dev",
-			}),
-		],
+		plugins: [cloudflarePagesAdapter()],
 	};
 });

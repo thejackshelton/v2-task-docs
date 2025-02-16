@@ -241,7 +241,21 @@ Tasks run sequentially in the order they are defined - like following steps in a
 
   The framework does the hard work of running tasks in sequence. This makes your code predictable and easier to debug.
 
-  If you need parallel execution, you can handle it by not returning the promise
+  If you need parallel execution, you can handle it by not returning the promise. 
+
+  ```tsx
+// Sequential (default)
+useTask$(async () => {
+   // This blocks the next task, where await implicitly returns a promise
+  await someAsyncWork();
+});
+
+// Parallel (opt-in)
+useTask$(() => {
+   // This doesn't block - runs in parallel
+  someAsyncWork();
+});
+  ```
 </details>
 
 <Showcase name="task-order" />

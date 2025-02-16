@@ -28,7 +28,6 @@ export default defineConfig(({ command, mode }): UserConfig => {
 			qwikRouter({
 				mdx: {
 					providerImportSource: "~/mdx/provider",
-					recmaPlugins: [recmaProvideComponents],
 				},
 			}),
 			qwikVite(),

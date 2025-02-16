@@ -236,6 +236,14 @@ Tasks run before the JSX has been rendered, meaning they **block rendering** unt
 
 Tasks run sequentially in the order they are defined - like following steps in a recipe. Just as you can't frost a cake before baking it, tasks will execute one after another in the order you write them.
 
+<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
+  <summary>Why don't tasks run in parallel by default?</summary>
+
+  The framework does the hard work of running tasks in sequence. This makes your code predictable and easier to debug.
+
+  If you need parallel execution, you can handle it by not returning the promise
+</details>
+
 <Showcase name="task-order" />
 
 ## Tracking and watching for changes 

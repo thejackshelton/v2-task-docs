@@ -19,7 +19,7 @@ Users type in inputs, data is fetched from different sources, timers fire, and s
 Tasks also come with a superpower: they can **efficiently transfer data between server and browser**.
 
 <details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
-  <summary>How is this different from effects in my previous framework?</summary>
+  <summary>How are tasks different from effects in my previous framework?</summary>
   
   Key differences:
   * Tasks can run on both server and browser ([resumability](https://qwik.dev/docs/concepts/resumable/))
@@ -50,7 +50,7 @@ Tasks *initially* run in the same place where your component is created.
 
 ### Created in the Browser
 
-When a component is created from a user interaction (like clicking a button), it runs in the browser:
+When a component is created from a user interaction (like clicking a button), the task runs in the browser:
 
 <Showcase name="task-conditional" />
 
@@ -252,9 +252,23 @@ useTask$(async () => {
 
 > The framework does the hard work of running tasks in order. This makes your code predictable and easier to debug.
 
+<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
+  <summary>How does Qwik schedule and manage tasks internally?</summary>
+
+  Qwik has a scheduler that identifies pieces of work that need to run, these are called **chores**. 
+
+  `useTask$`, `useComputed$`, and `useResource$`, are types of chores that the scheduler will run.
+
+  Some other types of chores include rendering a component, doing a node diff, or flushing the journal.
+
+  The journal tracks what needs to change, while the scheduler manages when and in what order those changes (and other work) should happen. 
+
+  The scheduler uses a [priority queue](https://encore.dev/blog/queueing) to determine when this work should happen. 
+</details>
+
 ### Running Tasks in Parallel
 
-Sometimes you might want tasks to run at the same time. You can do this by not awaiting the promise:
+Sometimes you might want tasks to run at the same time. You can do this by not returning the promise:
 
 ```tsx
 useTask$(() => {
@@ -268,19 +282,22 @@ useTask$(() => {
 });
 ```
 
-<details class="mt-6 bg-neutral-900 p-[1ch] rounded-md">
-  <summary>How does Qwik schedule and manage tasks internally?</summary>
+The `await` keyword implicitly returns the promise. If you do not return the promise, and the promise throws an error, **you are responsible for handling the error**.
 
-  Qwik has a scheduler that identifies pieces of work that need to run, these are called **chores**. 
 
-  `useTask$`, `useComputed$`, and `useResource$`, are types of chores that the scheduler will run.
+```tsx
+// Sequential: Framework handles errors for you
+useTask$(async () => {
+  await someAsyncWork();
+});
 
-  Some other types of chores include rendering a component, doing a node diff, or flushing the journal.
-
-  The journal tracks what needs to change, while the scheduler manages when and in what order those changes (and other work) should happen. 
-
-  The scheduler uses a [priority queue](https://encore.dev/blog/queueing) to determines when this work should happen. 
-</details>
+// Parallel: You must handle errors yourself
+useTask$(() => {
+  someAsyncWork().catch(error => {
+    console.error(error);
+  });
+});
+```
 
 <Showcase name="task-order" />
 

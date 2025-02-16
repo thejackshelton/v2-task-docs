@@ -11,17 +11,17 @@ export default component$(() => {
 
 	useTask$(async ({ track }) => {
 		track(() => count.value);
-		await someAsyncWork(1);
+		someAsyncWork(1);
 	});
 
 	useTask$(async ({ track }) => {
 		track(() => count.value);
-		await someAsyncWork(2);
+		someAsyncWork(2);
 	});
 
 	useTask$(async ({ track }) => {
 		track(() => count.value);
-		await someAsyncWork(3);
+		someAsyncWork(3);
 	});
 
 	return (
